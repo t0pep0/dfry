@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -52,7 +53,7 @@ func Post(uri string, params map[string][]string) (answer io.Reader, err error) 
 	return clientDo(req)
 }
 
-func PostMiltipart(uri string, params map[string]interface{}) (answer io.Reader, err error) {
+func PostMultipart(uri string, params map[string]interface{}) (answer io.Reader, err error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	for key, value := range params {
@@ -63,6 +64,7 @@ func PostMiltipart(uri string, params map[string]interface{}) (answer io.Reader,
 			part, _ := writer.CreateFormFile(key, val.Name())
 			io.Copy(part, val)
 		default:
+			log.Println(val)
 			return answer, _INVALID_PARAM
 		}
 	}
